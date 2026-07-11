@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>htaccess Redirect Generator</title>
+<meta name="description" content="Build Apache .htaccess rules in your browser: 301 and 302 redirects, force HTTPS, www to non-www or the reverse, and custom RewriteRules. Local, no server, copyable output.">
+<link rel="canonical" href="https://0xelitesystem.github.io/htaccess-redirect-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="htaccess Redirect Generator">
+<meta property="og:description" content="Build Apache .htaccess redirect and rewrite rules in your browser. Local, copyable, no tracking.">
+<meta property="og:url" content="https://0xelitesystem.github.io/htaccess-redirect-generator/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "htaccess Redirect Generator",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "url": "https://0xelitesystem.github.io/htaccess-redirect-generator/",
+  "author": { "@type": "Person", "name": "0xelitesystem", "url": "https://elitesystem.ai" }
+}
+</script>
+<style>
+:root {
+  --bg: #fafaf6;
+  --surface: #ffffff;
+  --ink: #0a1d1e;
+  --ink-soft: #2c4a4c;
+  --rule: #c8d4d3;
+  --teal: #0f5c60;
+  --teal-deep: #0a4548;
+  --gold: #b07d2a;
+  --gold-deep: #8a611f;
+  --err: #8b1a1a;
+  --code-bg: #f0ebe1;
+}
+[data-theme="dark"] {
+  --bg: #0c1c1d;
+  --surface: #14292a;
+  --ink: #e8ebe6;
+  --ink-soft: #b0c0bd;
+  --rule: #2a4042;
+  --teal: #4ab4ba;
+  --teal-deep: #6dc8ce;
+  --gold: #d4a155;
+  --gold-deep: #e6b876;
+  --err: #e88080;
+  --code-bg: #0a1718;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  line-height: 1.55;
+}
+.wrap { max-width: 960px; margin: 0 auto; }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid var(--teal);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+h1 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.01em; color: var(--teal); }
+.tag {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.75rem;
+  color: var(--gold-deep);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+[data-theme="dark"] .tag { color: var(--gold); }
+.theme-btn {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+.lede { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 1.75rem; max-width: 64ch; }
+.input-box {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-radius: 3px;
+}
+.block { border-top: 1px solid var(--rule); padding-top: 1.1rem; margin-top: 1.1rem; }
+.block:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.block-title { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem; text-transform: none; letter-spacing: 0; }
+input[type="text"], select {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 0.55rem 0.65rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.85rem;
+  border-radius: 2px;
+  width: 100%;
+}
+select { font-family: inherit; }
+input:focus, select:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+.check-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+.check-row input { width: 1rem; height: 1rem; cursor: pointer; accent-color: var(--teal); }
+.check-row label { display: inline; margin: 0; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 0.9rem; color: var(--ink); }
+.hint { font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.35rem; }
+.redirect-rows { display: flex; flex-direction: column; gap: 0.75rem; }
+.redirect-row { display: grid; grid-template-columns: 90px 1fr 1fr auto; gap: 0.6rem; align-items: center; }
+.redirect-row .del { padding: 0.5rem 0.7rem; }
+.small-btn { font-size: 0.8rem; padding: 0.45rem 0.85rem; font-family: inherit; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; border-radius: 2px; }
+.small-btn:hover { border-color: var(--teal); }
+.privacy-note { font-size: 0.78rem; color: var(--gold-deep); margin-top: 1rem; }
+[data-theme="dark"] .privacy-note { color: var(--gold); }
+.error-msg {
+  color: var(--err);
+  font-size: 0.85rem;
+  margin-top: 0.85rem;
+  padding: 0.65rem;
+  background: var(--code-bg);
+  border-left: 3px solid var(--err);
+  border-radius: 2px;
+}
+.section {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 1.25rem;
+  border-radius: 3px;
+}
+.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; gap: 0.75rem; }
+.section-title { font-size: 0.9rem; font-weight: 600; letter-spacing: 0.02em; }
+.copy-btn { font-size: 0.78rem; padding: 0.4rem 0.85rem; font-family: inherit; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; border-radius: 2px; }
+.copy-btn:hover { border-color: var(--teal); }
+pre {
+  background: var(--code-bg);
+  padding: 0.85rem;
+  border-radius: 2px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+}
+footer {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+footer a { color: var(--teal); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+@media (max-width: 640px) {
+  body { padding: 1rem 0.75rem; }
+  h1 { font-size: 1.4rem; }
+  .redirect-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>htaccess Redirect Generator</h1>
+    <div class="tag">Apache rules in your browser</div>
+  </div>
+  <button class="theme-btn" id="theme-toggle" type="button">Dark</button>
+</header>
+
+<p class="lede">Build an Apache <code>.htaccess</code> snippet: 301 or 302 path redirects, force HTTPS, www to non-www or the reverse, and your own RewriteRules. The output updates live. Everything runs locally in your browser.</p>
+
+<div class="input-box">
+  <div class="block">
+    <div class="block-title">Canonical host</div>
+    <div class="check-row">
+      <input type="checkbox" id="force-https">
+      <label for="force-https">Force HTTPS (redirect http to https)</label>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="www-toggle">
+      <label for="www-toggle">Normalize www</label>
+    </div>
+    <select id="www-dir" disabled>
+      <option value="strip">www to non-www (drop the www)</option>
+      <option value="add">non-www to www (add the www)</option>
+    </select>
+    <div class="hint">Redirects use a 301 (permanent). The rules apply to any host by default.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Path redirects</div>
+    <div class="redirect-rows" id="redirect-rows"></div>
+    <button class="small-btn" id="add-redirect" type="button" style="margin-top:0.75rem;">Add redirect</button>
+    <div class="hint">Old path is matched from the site root, for example <code>/old-page</code>. New URL can be a path or a full URL.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Custom RewriteRules</div>
+    <div class="check-row">
+      <input type="checkbox" id="custom-toggle">
+      <label for="custom-toggle">Add raw RewriteRule lines</label>
+    </div>
+    <input type="text" id="custom-pattern" placeholder="^blog/([0-9]+)$" spellcheck="false" style="margin-bottom:0.5rem;" disabled>
+    <input type="text" id="custom-target" placeholder="post.php?id=$1" spellcheck="false" disabled>
+    <div class="check-row" style="margin-top:0.6rem;">
+      <input type="checkbox" id="custom-redirect" disabled>
+      <label for="custom-redirect">Make it an external 301 redirect (add R=301)</label>
+    </div>
+    <div class="hint">Pattern is a regex against the requested path. Target is the substitution. Leave the redirect box unchecked for an internal rewrite.</div>
+  </div>
+
+  <div class="privacy-note">Rules are built locally with your browser. Nothing is sent to any server.</div>
+  <div id="error-box"></div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <div class="section-title">.htaccess output</div>
+    <button class="copy-btn" id="copy-btn" type="button">Copy .htaccess</button>
+  </div>
+  <pre id="output"></pre>
+</div>
+
+<footer>
+  <div>htaccess Redirect Generator. Open source, MIT licensed. <a href="https://github.com/0xelitesystem/htaccess-redirect-generator" target="_blank" rel="noopener">View source</a>.</div>
+  <div>For Apache with mod_rewrite enabled.</div>
+</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const themeBtn = $("theme-toggle");
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "Light" : "Dark";
+}
+themeBtn.addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme") || "light";
+  setTheme(cur === "dark" ? "light" : "dark");
+});
+(function initTheme() {
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(prefersDark ? "dark" : "light");
+})();
+
+const redirectRows = $("redirect-rows");
+
+function addRedirectRow(code, from, to) {
+  const row = document.createElement("div");
+  row.className = "redirect-row";
+
+  const sel = document.createElement("select");
+  ["301", "302"].forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    if (c === (code || "301")) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  const fromInput = document.createElement("input");
+  fromInput.type = "text";
+  fromInput.placeholder = "/old-page";
+  fromInput.spellcheck = false;
+  if (from) fromInput.value = from;
+
+  const toInput = document.createElement("input");
+  toInput.type = "text";
+  toInput.placeholder = "/new-page or https://...";
+  toInput.spellcheck = false;
+  if (to) toInput.value = to;
+
+  const del = document.createElement("button");
+  del.className = "small-btn del";
+  del.type = "button";
+  del.textContent = "Remove";
+  del.addEventListener("click", () => { row.remove(); render(); });
+
+  [sel, fromInput, toInput].forEach((el) => {
+    el.addEventListener("input", render);
+    el.addEventListener("change", render);
+  });
+
+  row.appendChild(sel);
+  row.appendChild(fromInput);
+  row.appendChild(toInput);
+  row.appendChild(del);
+  redirectRows.appendChild(row);
+}
+
+$("add-redirect").addEventListener("click", () => { addRedirectRow(); render(); });
+
+// Toggle enabling of dependent inputs
+$("www-toggle").addEventListener("change", () => {
+  $("www-dir").disabled = !$("www-toggle").checked;
+  render();
+});
+$("custom-toggle").addEventListener("change", () => {
+  const on = $("custom-toggle").checked;
+  $("custom-pattern").disabled = !on;
+  $("custom-target").disabled = !on;
+  $("custom-redirect").disabled = !on;
+  render();
+});
+
+["force-https", "www-dir", "custom-pattern", "custom-target", "custom-redirect"].forEach((id) => {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+});
+
+function normalizePath(p) {
+  p = p.trim();
+  if (!p) return "";
+  if (/^https?:\/\//i.test(p)) return p; // full URL, leave as-is
+  if (p[0] !== "/") p = "/" + p;
+  return p;
+}
+
+function escapeRegexPath(p) {
+  // Escape regex metacharacters in a literal path, drop the leading slash for RewriteRule
+  return p.replace(/^\//, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function showError(msg) {
+  $("error-box").innerHTML = '<div class="error-msg">' + msg.replace(/</g, "&lt;") + "</div>";
+}
+function clearError() { $("error-box").innerHTML = ""; }
+
+function render() {
+  clearError();
+  const errors = [];
+  const lines = [];
+  lines.push("# Generated by htaccess-redirect-generator");
+  lines.push("# Requires Apache with mod_rewrite enabled.");
+  lines.push("");
+  lines.push("RewriteEngine On");
+
+  const forceHttps = $("force-https").checked;
+  const wwwOn = $("www-toggle").checked;
+  const wwwDir = $("www-dir").value;
+
+  if (forceHttps) {
+    lines.push("");
+    lines.push("# Force HTTPS");
+    lines.push("RewriteCond %{HTTPS} off");
+    lines.push("RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]");
+  }
+
+  if (wwwOn) {
+    if (wwwDir === "strip") {
+      lines.push("");
+      lines.push("# Redirect www to non-www");
+      lines.push("RewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]");
+      lines.push("RewriteRule ^(.*)$ https://%1/$1 [R=301,L]");
+    } else {
+      lines.push("");
+      lines.push("# Redirect non-www to www");
+      lines.push("RewriteCond %{HTTP_HOST} !^www\\. [NC]");
+      lines.push("RewriteCond %{HTTP_HOST} ^(.+)$ [NC]");
+      lines.push("RewriteRule ^(.*)$ https://www.%1/$1 [R=301,L]");
+    }
+  }
+
+  // Path redirects
+  const rows = Array.from(redirectRows.querySelectorAll(".redirect-row"));
+  const redirectLines = [];
+  rows.forEach((row, i) => {
+    const code = row.querySelector("select").value;
+    const fromRaw = row.querySelector("input:nth-of-type(1)").value.trim();
+    const toRaw = row.querySelector("input:nth-of-type(2)").value.trim();
+    if (!fromRaw && !toRaw) return; // skip fully empty row
+    if (!fromRaw) { errors.push("Redirect " + (i + 1) + ": old path is empty."); return; }
+    if (!toRaw) { errors.push("Redirect " + (i + 1) + ": new URL is empty."); return; }
+    if (/^https?:\/\//i.test(fromRaw)) { errors.push("Redirect " + (i + 1) + ": old path should be a site path like /old, not a full URL."); return; }
+    const from = normalizePath(fromRaw);
+    const to = normalizePath(toRaw);
+    redirectLines.push("Redirect " + code + " " + from + " " + to);
+  });
+  if (redirectLines.length) {
+    lines.push("");
+    lines.push("# Path redirects");
+    redirectLines.forEach((l) => lines.push(l));
+  }
+
+  // Custom rewrite
+  if ($("custom-toggle").checked) {
+    const pattern = $("custom-pattern").value.trim();
+    const target = $("custom-target").value.trim();
+    if (!pattern && !target) {
+      // nothing entered yet, no error
+    } else if (!pattern) {
+      errors.push("Custom rule: pattern is empty.");
+    } else if (!target) {
+      errors.push("Custom rule: target is empty.");
+    } else {
+      lines.push("");
+      lines.push("# Custom rewrite");
+      const flags = $("custom-redirect").checked ? "[R=301,L]" : "[L]";
+      lines.push("RewriteRule " + pattern + " " + target + " " + flags);
+    }
+  }
+
+  if (errors.length) {
+    showError(errors.join(" "));
+  }
+
+  $("output").textContent = lines.join("\n") + "\n";
+}
+
+$("copy-btn").addEventListener("click", async () => {
+  const text = $("output").textContent || "";
+  if (!text.trim()) return;
+  const btn = $("copy-btn");
+  const original = btn.textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = "Copied";
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); btn.textContent = "Copied"; }
+    catch (e2) { btn.textContent = "Copy failed"; }
+    document.body.removeChild(ta);
+  }
+  setTimeout(() => { btn.textContent = original; }, 1500);
+});
+
+// Seed one empty redirect row and render
+addRedirectRow();
+render();
+</script>
+</body>
+</html>
