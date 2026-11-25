@@ -50,6 +50,6 @@ MIT.
 
 ## Related
 
-- [mock-data-generator](https://github.com/0xelitesystem/mock-data-generator)
-- [lorem-ipsum-generator](https://github.com/0xelitesystem/lorem-ipsum-generator)
+- [browser-fake-test-data](https://github.com/0xelitesystem/browser-fake-test-data)
+- [lorem-filler-text-browser](https://github.com/0xelitesystem/lorem-filler-text-browser)
 - [jwt-inspector](https://github.com/0xelitesystem/jwt-inspector)
