@@ -1,8 +1,8 @@
-# htaccess Redirect Generator
+# htaccess Rewrite Rule Builder
 
 Build Apache `.htaccess` redirect and rewrite rules in your browser. No server, no tracking, no third-party scripts.
 
-**Live demo:** https://0xelitesystem.github.io/htaccess-redirect-generator/
+**Live demo:** https://0xelitesystem.github.io/htaccess-rewrite-rule-builder/
 
 ## Use
 
@@ -30,8 +30,8 @@ Everything runs in your browser. Your paths and rules never leave your machine. 
 ## Run locally
 
 ```bash
-git clone https://github.com/0xelitesystem/htaccess-redirect-generator
-cd htaccess-redirect-generator
+git clone https://github.com/0xelitesystem/htaccess-rewrite-rule-builder
+cd htaccess-rewrite-rule-builder
 # Open index.html in your browser, or:
 python -m http.server 8000
 ```
