@@ -52,4 +52,4 @@ MIT.
 
 - [browser-fake-test-data](https://github.com/0xelitesystem/browser-fake-test-data)
 - [lorem-filler-text-browser](https://github.com/0xelitesystem/lorem-filler-text-browser)
-- [jwt-inspector](https://github.com/0xelitesystem/jwt-inspector)
+- [jwt-verify-in-browser](https://github.com/0xelitesystem/jwt-verify-in-browser)
